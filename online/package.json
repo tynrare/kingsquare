@@ -1,0 +1,18 @@
+{
+  "name": "kingsquare-online",
+  "version": "1.0.0",
+  "main": "index.html",
+  "scripts": {
+		"start": "vite --host",
+		"build": "vite build"
+  },
+  "author": "tynroar",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@poki/netlib": "^0.0.13"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

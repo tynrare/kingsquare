@@ -1,0 +1,105 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	font-family: "Source Code Pro", "Lucida Console", "Courier New",
+	"Droid Sans Mono", monospace;
+	background-color: black;
+	color: white;
+}
+
+#statsel {
+	position: absolute;
+	margin: 6px;
+	color: #666;
+}
+
+#statsheader {
+	1.2em;
+}
+
+#statslog {
+	color: #555;
+}
+
+#statslog div:nth-child(n+2) {
+	opacity: 0.5;
+}
+
+#statslog div:nth-child(n+4) {
+	opacity: 0;
+}
+
+#gridel {
+	--grid_width: 5;
+	--grid_height: 5;
+	width: min(100vh, 100vw);
+	height: min(100vh, 100vw);
+	margin: auto;
+	display: flex;
+	flex-flow: wrap;
+	font-size: min(10vh, 10vw);
+}
+
+#gridel > g {
+	color: #aaa;
+	width: calc(100% / var(--grid_width));
+	display: block;
+	margin: auto;
+	text-align: center;
+	transition-duration: 300ms;
+	transition-property: color;
+	position: relative;
+	text-transform: uppercase;
+}
+
+@keyframes blink {
+	from {
+		filter: brightness(3);
+		text-shadow: 0px 0px 8px var(--color);
+	}
+	to {
+		filter: brightness(1);
+		text-shadow: 0px 0px 0px var(--color);
+	}
+}
+
+#gridel > g.highlight {
+	--color: #51f341;
+	color: var(--color);
+	font-weight: bold;
+	animation: blink 0.7s;
+}
+#gridel > g.highlight.yellow {
+	--color: #f3c141;
+}
+
+#gridel > g.highlight::after {
+	content: "▲";
+	position: absolute;
+	font-size: 1rem;
+	top: 0;
+	left: 0%;
+	transform: scale(0);
+}
+
+#gridel > g.highlight.up::after {
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+#gridel > g.highlight.down::after {
+	top: 100%;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(180deg);
+}
+#gridel > g.highlight.left::after {
+	top: 50%;
+	transform: translate(-50%, -50%) rotate(-90deg);
+}
+#gridel > g.highlight.right::after {
+	top: 50%;
+	left: 100%;
+	transform: translate(-50%, -50%) rotate(90deg);
+}
