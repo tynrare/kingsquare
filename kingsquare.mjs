@@ -100,7 +100,7 @@ class Kingsquare {
     if (!((height * 0.5) % 1)) {
       this.height += 1;
     }
-    this.grid = Array.from(this.zerosymbol.repeat(width * height));
+    this.grid = Array.from(this.zerosymbol.repeat(width * this.height));
     this.exclusions = [word];
 
     const y = Math.floor(this.height * 0.5);

@@ -90,14 +90,14 @@ export default function main(callback, autoloop = true, autodraw = true) {
       const dt = Math.ceil(now - timestamp);
       timestamp = now;
       log(`${dt}ms: ${key} -> ${word}`);
+			gridel.style.setProperty("--grid_width", kingsquare.width);
+			gridel.style.setProperty("--grid_height", kingsquare.height);
       if (autodraw) {
         this.draw(indices);
       }
       if (callback) {
         callback(key, indices, word);
       }
-			gridel.style.setProperty("--grid_width", kingsquare.width);
-			gridel.style.setProperty("--grid_height", kingsquare.height);
     });
 
     if (autodraw) {
