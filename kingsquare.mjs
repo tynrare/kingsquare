@@ -104,7 +104,6 @@ class Kingsquare {
     this.exclusions = [word];
 
     const y = Math.floor(this.height * 0.5);
-    console.log(y, this.height, height);
     for (let x = 0; x < Math.min(width, word.length); x++) {
       const index = y * width + x;
       this.grid[index] = word[x];

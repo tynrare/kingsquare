@@ -56,11 +56,12 @@ function loop() {
   const dt = Math.ceil(now - timestamp);
 
   const st = `🟢${stats.approves}`;
+  const online = `${network.netlib.peers.size + 1}/16 online`;
 
   if (kworker.active) {
-    statsheader.innerHTML = `${st}. ${dt}ms`;
+    statsheader.innerHTML = `${online}. ${st}. ${dt}ms`;
   } else {
-    statsheader.innerHTML = `${st}. done.`;
+    statsheader.innerHTML = `${online}. ${st}. done.`;
   }
 
   requestAnimationFrame(loop);

@@ -80,6 +80,7 @@ class Network {
 
   init() {
     this.netlib = new Netlib(this.uuid);
+		console.log(this.netlib);
 
     this._beforeunload_listener = this.dispose.bind(this);
     window.addEventListener("beforeunload", this._beforeunload_listener);
