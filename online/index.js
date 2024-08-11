@@ -144,7 +144,7 @@ function create(word = "бобик") {
 
 let initial_ask_grid_count = 0;
 let initial_ask_grid_word = "бобик";
-function initial_ask_grid(word = "бобик") {
+function initial_ask_grid(word) {
 	if (word) {
 		initial_ask_grid_count = 0;
 		initial_ask_grid_word = word;
