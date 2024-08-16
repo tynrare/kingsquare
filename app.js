@@ -83,32 +83,50 @@ export default function main(callback, autoloop = true, autodraw = true) {
   dictionary.build(wordlist);
 
   this.draw = draw;
-	this.log = log;
-  this.start = () => {
-    kworker.start((key, indices, word) => {
-      const now = performance.now();
-      const dt = Math.ceil(now - timestamp);
-      timestamp = now;
-      log(`${dt}ms: ${key} -> ${word}`);
-			gridel.style.setProperty("--grid_width", kingsquare.width);
-			gridel.style.setProperty("--grid_height", kingsquare.height);
-      if (autodraw) {
-        this.draw(indices);
-      }
-      if (callback) {
-        callback(key, indices, word);
-      }
-    });
+  this.log = log;
+  const onsolution = (key, indices, word) => {
+		console.log(`new word found ${key} -> ${word}`);
+		// return false to stop search
+  };
+  const onfinish = (words) => {
+    const now = performance.now();
+    const dt = Math.ceil(now - timestamp);
+    timestamp = now;
+
+		const solutions = Object.values(words).sort((a, b) => b.alias.length - a.alias.length);
+
+		
+		const solution = solutions[0];
+
+		if (!solution) {
+			return;
+		}
+
+		kworker.insert(solution.alias, solution.indices, solution.words[0]);
+		
+    log(`${dt}ms: ${solution.alias} -> ${solution.words[0]}`);
 
     if (autodraw) {
-      this.draw();
+      this.draw(solution.indices);
     }
-    if (autoloop) {
-      loop();
+    if (callback) {
+      callback(solution.alias, solution.indices, solution.words[0]);
     }
+
+    gridel.style.setProperty("--grid_width", kingsquare.width);
+    gridel.style.setProperty("--grid_height", kingsquare.height);
+
+		this.start();
+  };
+  this.start = () => {
+    kworker.start(onsolution, onfinish);
   };
 
   this.dictionary = dictionary;
   this.kingsquare = kingsquare;
   this.kworker = kworker;
+
+	if (autoloop) {
+		loop();
+	}
 }

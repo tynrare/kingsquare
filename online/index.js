@@ -52,8 +52,14 @@ const stats = {
 };
 
 function loop() {
+  requestAnimationFrame(loop);
+
   const now = performance.now();
   const dt = Math.ceil(now - timestamp);
+
+	if (!network.netlib) {
+		return;
+	}
 
   const st = `🟢${stats.approves}`;
   const online = `${network.netlib.peers.size + 1}/16 online`;
@@ -64,7 +70,6 @@ function loop() {
     statsheader.innerHTML = `${online}. ${st}. done.`;
   }
 
-  requestAnimationFrame(loop);
 }
 
 function recieve(type, data) {
@@ -81,7 +86,6 @@ function recieve(type, data) {
       kapp.kingsquare.exclusions = [];
       kapp.start();
       kapp.draw();
-      loop();
       break;
     }
     case MESSAGE_TYPE.ASK_GRID: {
@@ -138,7 +142,6 @@ function send_grid(to) {
 function create(word = "бобик") {
   kapp.kingsquare.init(word);
   kapp.start();
-  loop();
   kapp.draw();
 }
 
@@ -172,6 +175,7 @@ function main() {
   });
   network.recieve = recieve;
   network.greet = greet;
+  loop();
 }
 
 main();

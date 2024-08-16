@@ -10,15 +10,50 @@ function main() {
 	dictionary.build(wordlist);
 	kingsquare.init("базар");
 
-	let timestamp = performance.now();
-	kworker.start((key, indices, word) => {
-    const now = performance.now();
-    const dt = Math.ceil(now - timestamp);
-    timestamp = now;
-    console.log(`inserted ${key} -> ${word} in ${dt}ms`);
+	// maximum search time for one iteration
+	kworker.limit_traverse_time = 100;
 
-    printgrid(kingsquare.grid, indices, kingsquare.width, kingsquare.height);
-	});
+	let timestamp = 0;
+	let elapsed = 0;
+
+	const insert = (key, indices, word) => {
+		kworker.insert(key, indices, word);
+		console.log(`inserted ${key} -> ${word}`);
+
+		printgrid(kingsquare.grid, indices, kingsquare.width, kingsquare.height);
+	}
+
+	const onsolution = (key, indices, word) => {
+		console.log(`new word found ${key} -> ${word}`);
+		// return false to stop search
+	};
+	const onfinish = (words) => {
+		const now = performance.now();
+		const dt = Math.ceil(now - timestamp);
+		timestamp = now;
+		elapsed += dt;
+
+		const solutions = Object.values(words).sort((a, b) => b.alias.length - a.alias.length);
+
+		console.log(`found ${solutions.length} solutions in ${dt}ms`);
+
+		const solution = solutions[0];
+
+		if (!solution) {
+			console.log(`solved in ${elapsed}ms`);
+			return;
+		}
+		
+		insert(solution.alias, solution.indices, solution.words[0]);
+
+		start();
+	};
+	const start = () => {
+		let timestamp = performance.now();
+		kworker.start(onsolution, onfinish);
+	}
+
+	start();
 }
 
 main();
