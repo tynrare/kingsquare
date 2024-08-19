@@ -12,9 +12,15 @@ const kapp = new KingsquareApp(calculated, false, false);
 
 let timestamp = performance.now();
 function calculated(key, indices, word) {
+  if (!key) {
+    if (is_done()) {
+		initial_ask_grid(word);
+	}
+    return;
+  }
   kapp.draw(indices);
 
-	on_solution(key, indices, word);
+  on_solution(key, indices, word);
 
   const packet = new NetPacketSolution();
   packet.set_content(key, indices, word);
@@ -26,17 +32,17 @@ function receive_solution(key, indices, word) {
     return false;
   }
   kapp.draw(indices, "yellow");
-	on_solution(key, indices, word);
+  on_solution(key, indices, word);
   return true;
 }
 
 let last_word = "бобик"
 function on_solution(key, indices, word) {
   timestamp = performance.now();
-	last_word = word;
-	if (is_done()) {
-		initial_ask_grid(word);
-	}
+  last_word = word;
+  if (is_done()) {
+      initial_ask_grid(word);
+  }
 }
 
 function is_done() {

@@ -28,6 +28,9 @@ function draw(highlights, color = "green") {
     gridel.innerHTML = "<g>*</g>".repeat(kingsquare.grid.length);
   }
 
+  gridel.style.setProperty("--grid_width", kingsquare.width);
+  gridel.style.setProperty("--grid_height", kingsquare.height);
+
   for (let i = 0; i < kingsquare.grid.length; i++) {
     const letter = kingsquare.grid[i];
     const childel = gridel.children[i];
@@ -98,28 +101,32 @@ export default function main(callback, autoloop = true, autodraw = true) {
 		
 		const solution = solutions[0];
 
+        if (solution) {
+          kworker.insert(solution.alias, solution.indices, solution.words[0]);
+        }
+
+        if (callback) {
+          callback(solution?.alias ?? null, solution?.indices ?? null, solution?.words[0] ?? null);
+        }
+
 		if (!solution) {
 			return;
 		}
 
-		kworker.insert(solution.alias, solution.indices, solution.words[0]);
 		
-    log(`${dt}ms: ${solution.alias} -> ${solution.words[0]}`);
+        log(`${dt}ms: ${solution.alias} -> ${solution.words[0]}`);
 
-    if (autodraw) {
-      this.draw(solution.indices);
-    }
-    if (callback) {
-      callback(solution.alias, solution.indices, solution.words[0]);
-    }
+        if (autodraw) {
+          this.draw(solution.indices);
+        }
 
-    gridel.style.setProperty("--grid_width", kingsquare.width);
-    gridel.style.setProperty("--grid_height", kingsquare.height);
-
-		this.start();
+		this.start(false);
   };
-  this.start = () => {
+  this.start = (draw = true) => {
     kworker.start(onsolution, onfinish);
+    if (autodraw && draw) {
+      this.draw();
+    }
   };
 
   this.dictionary = dictionary;

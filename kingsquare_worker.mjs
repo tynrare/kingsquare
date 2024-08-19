@@ -8,13 +8,14 @@ class KingsquareWorker {
     /** @type {Kingsquare} */
     this.core = kingsquare;
     this.words_found = {};
+    this.words_found_count = 0;
     this.active = false;
     this.limit_traverse_time = 1000;
-		this.timestamp = 0;
+    this.timestamp = 0;
   }
 
   loop() {
-		this._loop_requested = false;
+    this._loop_requested = false;
 
     if (!this.active) {
       return;
@@ -26,29 +27,30 @@ class KingsquareWorker {
     }
 
     const max_time = this.limit_traverse_time;
-		let resume_loop = true;
+    let resume_loop = true;
 
     const cb = (key, indices, words) => {
       const dt = Math.ceil(performance.now() - this.timestamp);
-			if (this.words_found[key]) {
-				return true;
-			}
+      if (this.words_found[key]) {
+          return true;
+      }
       this.words_found[key] = {
         alias: key,
         indices,
         words,
       };
+      this.words_found_count += 1;
 
       if (this.onsolution) {
-				const ret = this.onsolution(key, indices, words, this.words_found);
-				if (ret === false) {
-					resume_loop = false;
-					return false;
-				}
+        const ret = this.onsolution(key, indices, words, this.words_found);
+        if (ret === false) {
+            resume_loop = false;
+            return false;
+        }
       }
 
-      if (max_time && dt > max_time) {
-				resume_loop = false;
+      if (max_time && dt > max_time && this.words_found_count) {
+        resume_loop = false;
         return false;
       }
 
@@ -65,10 +67,10 @@ class KingsquareWorker {
       return;
     }
 
-		if (!this._loop_requested) {
-			this._loop_requested = true;
-			setTimeout(this.loop.bind(this), 100);
-		}
+    if (!this._loop_requested) {
+        this._loop_requested = true;
+        setTimeout(this.loop.bind(this), 100);
+    }
   }
 
   insert(key, indices, word) {
@@ -106,10 +108,11 @@ class KingsquareWorker {
 
   start(onsolution, onfinish) {
     this.words_found = {};
+    this.words_found_count = 0;
     this.onsolution = onsolution;
     this.onfinish = onfinish;
     this.active = true;
-		this.timestamp = performance.now();
+    this.timestamp = performance.now();
     this.loop();
   }
 
