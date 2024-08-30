@@ -24,9 +24,21 @@
 		<script type="module">
 			import KingsquareApp from "./app.js";
 
-			const kapp = new KingsquareApp();
-			kapp.kingsquare.init("бобик");
+			const hash_word = decodeURIComponent(window.location.hash.substr(1))
+			const initial_word = hash_word || "бобик";
+			const kapp = new KingsquareApp(on_solution);
+			kapp.kingsquare.init(initial_word);
 			kapp.start();
+
+			let last_word = null;
+			function on_solution(alias, indices, word) {
+				if (word) {
+					last_word = word;
+				} else {
+					kapp.kingsquare.init(last_word);
+					kapp.start();
+				}
+			}
 		</script>
 	</body>
 </html>
